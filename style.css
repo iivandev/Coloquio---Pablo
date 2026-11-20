@@ -1,0 +1,684 @@
+/* =====================================================
+   0. TIPOGRAFÍAS
+   Chakra Petch (títulos, números, botón): angulosa, de "aparato".
+   DM Sans (texto): limpia y legible.
+   Si no hay internet, el navegador usa las fuentes de respaldo.
+   ===================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap");
+
+/* =====================================================
+   1. VARIABLES
+   Cambiando estos valores cambia el look de toda la página.
+   ===================================================== */
+:root {
+    /* Pantalla oscura de la Pokédex */
+    --pantalla: #101b27;
+    --panel: rgba(24, 36, 51, 0.78);
+    --linea: rgba(255, 255, 255, 0.1);
+    --texto: #e8eef5;
+    --texto-suave: #8fa3b8;
+
+    /* Carcasa y luces */
+    --rojo: #e23a2d;
+    --rojo-claro: #ff5a4a;
+    --rojo-oscuro: #8f1d15;
+    --lente: #35a7ff;
+    --amarillo: #ffd23f;
+    --verde: #4ade80;
+    --tinta: #0a1119;
+
+    /* Cards (claras, sobre la pantalla oscura) */
+    --carta-a: #ffffff;
+    --carta-b: #e6eef7;
+    --carta-texto: #1c2733;
+    --carta-suave: #52647a;
+
+    --f-titulo: "Chakra Petch", "Trebuchet MS", "Segoe UI", sans-serif;
+    --f-texto: "DM Sans", "Segoe UI", Verdana, sans-serif;
+
+    /* Curva con pequeño rebote para las respuestas a hover */
+    --pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --suave: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* =====================================================
+   2. ESTILOS GENERALES
+   ===================================================== */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: #2f4358 var(--pantalla);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--texto);
+    font-family: var(--f-texto);
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+
+    /* Pantalla: resplandor azul arriba + grilla de puntos fija */
+    background-color: var(--pantalla);
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(53, 167, 255, 0.18), transparent 70%),
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: auto, 26px 26px;
+    background-attachment: fixed;
+}
+
+::selection {
+    background: var(--amarillo);
+    color: var(--tinta);
+}
+
+/* Scrollbar a tono (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: var(--pantalla);
+}
+::-webkit-scrollbar-thumb {
+    background: #2f4358;
+    border-radius: 99px;
+    border: 3px solid var(--pantalla);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #46627f;
+}
+
+/* =====================================================
+   3. TÍTULO: la carcasa roja con el lente y los LEDs
+   ===================================================== */
+h1 {
+    position: relative;
+    margin: 0 0 28px 0;
+    padding: 22px clamp(18px, 4vw, 40px);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    font-family: var(--f-titulo);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+
+    /* Rojo con degradé + rayado diagonal muy sutil */
+    background-color: var(--rojo);
+    background-image:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 14px, transparent 14px 28px),
+        linear-gradient(180deg, var(--rojo-claro) 0%, #d02b1f 100%);
+    border-bottom: 8px solid var(--tinta);
+    box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.3),
+        0 14px 44px rgba(226, 58, 45, 0.28);
+}
+
+/* El lente azul: lo único que se mueve solo en la página */
+h1::before {
+    content: "";
+    flex: none;
+    width: clamp(48px, 7vw, 64px);
+    height: clamp(48px, 7vw, 64px);
+    border-radius: 50%;
+    border: 5px solid #fff;
+    background:
+        radial-gradient(circle at 32% 28%, #fff 0 7%, rgba(255, 255, 255, 0) 9%),
+        radial-gradient(circle at 50% 50%, #9bd9ff 0%, var(--lente) 45%, #1769c9 100%);
+    box-shadow:
+        0 0 0 4px var(--tinta),
+        0 0 22px 4px rgba(53, 167, 255, 0.6),
+        inset 0 -6px 12px rgba(0, 30, 90, 0.5);
+    animation: lente-pulso 3.2s ease-in-out infinite;
+}
+
+/* Los tres LEDs (rojo, amarillo, verde) hechos con una sola caja y sombras */
+h1::after {
+    content: "";
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    margin-right: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--tinta);
+    background: #ff8a7f;
+    box-shadow:
+        22px 0 0 0 var(--amarillo), 22px 0 0 2px var(--tinta),
+        44px 0 0 0 var(--verde), 44px 0 0 2px var(--tinta);
+}
+
+@keyframes lente-pulso {
+    0%, 100% {
+        box-shadow:
+            0 0 0 4px var(--tinta),
+            0 0 16px 2px rgba(53, 167, 255, 0.45),
+            inset 0 -6px 12px rgba(0, 30, 90, 0.5);
+    }
+    50% {
+        box-shadow:
+            0 0 0 4px var(--tinta),
+            0 0 34px 10px rgba(53, 167, 255, 0.85),
+            inset 0 -6px 12px rgba(0, 30, 90, 0.5);
+    }
+}
+
+/* =====================================================
+   4. PANEL DE CONTROLES (queda fijo al hacer scroll)
+   ===================================================== */
+#controles {
+    position: sticky;
+    top: 14px;
+    z-index: 20;
+
+    width: calc(100% - 32px);
+    max-width: 1180px;
+    margin: 0 auto 32px auto;
+    padding: 16px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    /* Vidrio esmerilado sobre la pantalla */
+    background: var(--panel);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border: 1px solid var(--linea);
+    border-radius: 20px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 18px 44px rgba(0, 0, 0, 0.45);
+}
+
+input,
+select,
+button {
+    padding: 12px 14px;
+    font-family: var(--f-texto);
+    font-size: 0.98rem;
+    color: var(--texto);
+    border: 1.5px solid var(--linea);
+    border-radius: 12px;
+    background-color: rgba(8, 14, 22, 0.6);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s var(--pop);
+}
+
+/* ---- Buscador con lupa ---- */
+input {
+    flex: 1 1 240px;
+    min-width: 0;
+    padding-left: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238fa3b8' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+input::placeholder {
+    color: var(--texto-suave);
+}
+
+/* ---- Selects con flecha propia ---- */
+select {
+    flex: 1 1 180px;
+    min-width: 0;
+    padding-right: 40px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239fb3c8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+/* Las opciones desplegadas heredan el tema oscuro */
+option {
+    background-color: #16222f;
+    color: var(--texto);
+}
+
+input:hover,
+select:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(8, 14, 22, 0.8);
+}
+
+/* Foco visible: anillo azul brillante (outline transparente para modo alto contraste) */
+input:focus,
+select:focus {
+    outline: 2px solid transparent;
+    border-color: var(--lente);
+    background-color: rgba(8, 14, 22, 0.9);
+    box-shadow: 0 0 0 4px rgba(53, 167, 255, 0.25);
+}
+
+/* ---- Botón "tecla" roja con relieve ---- */
+button {
+    position: relative;
+    overflow: hidden;
+    flex: 0 0 auto;
+    cursor: pointer;
+    font-family: var(--f-titulo);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    border: 0;
+    background-color: var(--rojo);
+    background-image: linear-gradient(180deg, var(--rojo-claro), #d02b1f);
+    box-shadow:
+        0 4px 0 var(--rojo-oscuro),
+        0 10px 20px rgba(226, 58, 45, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Destello que cruza el botón al pasar el mouse */
+button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.6s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    background-color: var(--rojo-claro);
+}
+
+button:hover::after {
+    transform: translateX(120%);
+}
+
+/* Al apretar, la tecla se hunde */
+button:active {
+    transform: translateY(3px);
+    box-shadow:
+        0 1px 0 var(--rojo-oscuro),
+        0 3px 8px rgba(226, 58, 45, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+button:focus-visible {
+    outline: 3px solid var(--amarillo);
+    outline-offset: 3px;
+}
+
+/* =====================================================
+   5. CONTENEDOR DE CARDS
+   ===================================================== */
+#pokemon-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px 64px 16px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+}
+
+/* Cuando el JS escribe "No hay Pokémon..." (solo texto, sin cards) */
+#pokemon-container:not(:empty):not(:has(.pokemon-card)) {
+    display: block;
+    margin-top: 8px;
+    padding: 56px 24px;
+    text-align: center;
+    font-family: var(--f-titulo);
+    font-size: 1.15rem;
+    color: var(--texto-suave);
+    border: 2px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    width: calc(100% - 32px);
+}
+
+/* =====================================================
+   6. CADA CARD
+   Estructura que genera el JS (en orden):
+   h2 nombre · img · p número · p tipo · p altura · p peso
+   Se reordena con grid sin tocar el HTML.
+   ===================================================== */
+.pokemon-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-content: start;
+
+    padding: 26px 16px 18px 16px;
+    color: var(--carta-texto);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 22px;
+
+    /* Franja roja→amarilla arriba + fondo claro con degradé */
+    background:
+        linear-gradient(90deg, var(--rojo-claro), var(--amarillo)) top / 100% 5px no-repeat,
+        linear-gradient(165deg, var(--carta-a), var(--carta-b));
+    box-shadow:
+        inset 0 1px 0 #fff,
+        0 12px 26px rgba(0, 0, 0, 0.35);
+
+    transition:
+        transform 0.4s var(--pop),
+        box-shadow 0.3s ease;
+
+    /* Entrada rápida y escalonada de las primeras cards */
+    animation: card-entrada 0.45s var(--suave) backwards;
+}
+
+/* Todo el contenido queda por encima de la marca de agua */
+.pokemon-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Marca de agua: una pokébola gigante cortada en la esquina */
+.pokemon-card::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: -52px;
+    right: -52px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, #fff 0 9px, rgba(28, 39, 51, 0.14) 10px 17px, transparent 18px),
+        linear-gradient(
+            180deg,
+            rgba(226, 58, 45, 0.12) 0 45%,
+            rgba(28, 39, 51, 0.14) 45% 55%,
+            rgba(28, 39, 51, 0.05) 55%
+        );
+    transition: transform 0.7s var(--pop);
+}
+
+/* Reflejo tipo carta holográfica: cruza la card en diagonal */
+.pokemon-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.6) 46%,
+        rgba(130, 210, 255, 0.25) 50%,
+        rgba(255, 150, 220, 0.22) 54%,
+        transparent 65%
+    );
+    background-size: 260% 100%;
+    background-position: 130% 0;
+    opacity: 0;
+    transition: background-position 0.9s ease, opacity 0.3s ease;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-8px) rotate(-0.6deg);
+    box-shadow:
+        inset 0 1px 0 #fff,
+        0 0 0 2px rgba(53, 167, 255, 0.85),
+        0 0 28px rgba(53, 167, 255, 0.35),
+        0 26px 44px rgba(0, 0, 0, 0.5);
+}
+
+.pokemon-card:hover::before {
+    transform: rotate(120deg) scale(1.08);
+}
+
+.pokemon-card:hover::after {
+    background-position: -30% 0;
+    opacity: 1;
+}
+
+/* ---- Imagen (arriba) ---- */
+.pokemon-card img {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-self: center;
+
+    width: 128px;
+    height: 128px;
+    background:
+        radial-gradient(circle at 50% 35%, #fff 0%, #dbe6f2 100%);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 2px #c9d6e4,
+        0 10px 18px rgba(28, 39, 51, 0.18);
+
+    /* Los sprites son pixel art: nítidos, no borrosos */
+    image-rendering: pixelated;
+    transition: transform 0.45s var(--pop);
+}
+
+.pokemon-card:hover img {
+    transform: translateY(-4px) scale(1.1);
+}
+
+/* ---- Nombre ---- */
+.pokemon-card h2 {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 14px 0 10px 0;
+    font-family: var(--f-titulo);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-transform: capitalize;   /* "bulbasaur" → "Bulbasaur" */
+    overflow-wrap: anywhere;
+}
+
+/* ---- Textos generales de la card ---- */
+.pokemon-card p {
+    margin: 0;
+    color: var(--carta-suave);
+    font-size: 0.92rem;
+}
+
+/* Número: chip oscuro pegado arriba a la izquierda */
+.pokemon-card p:nth-of-type(1) {
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    padding: 3px 10px;
+    font-family: var(--f-titulo);
+    font-weight: 600;
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    color: var(--amarillo);
+    background: var(--tinta);
+    border-radius: 99px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Tipo: píldora azul centrada */
+.pokemon-card p:nth-of-type(2) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: center;
+    padding: 5px 16px;
+    font-weight: 600;
+    color: #1d5fbf;
+    background: rgba(47, 128, 237, 0.12);
+    border: 1px solid rgba(47, 128, 237, 0.25);
+    border-radius: 99px;
+    text-transform: capitalize;
+}
+
+/* Altura y peso: dos casilleros separados por una línea */
+.pokemon-card p:nth-of-type(3),
+.pokemon-card p:nth-of-type(4) {
+    grid-row: 4;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed #b6c4d4;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.pokemon-card p:nth-of-type(3) {
+    padding-right: 8px;
+    border-right: 1px solid #d3dde8;
+}
+
+/* ---- Animación de entrada: solo las 12 primeras, escalonadas ---- */
+@keyframes card-entrada {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+}
+
+.pokemon-card:nth-child(2)  { animation-delay: 0.04s; }
+.pokemon-card:nth-child(3)  { animation-delay: 0.08s; }
+.pokemon-card:nth-child(4)  { animation-delay: 0.12s; }
+.pokemon-card:nth-child(5)  { animation-delay: 0.16s; }
+.pokemon-card:nth-child(6)  { animation-delay: 0.20s; }
+.pokemon-card:nth-child(7)  { animation-delay: 0.24s; }
+.pokemon-card:nth-child(8)  { animation-delay: 0.28s; }
+.pokemon-card:nth-child(9)  { animation-delay: 0.32s; }
+.pokemon-card:nth-child(10) { animation-delay: 0.36s; }
+.pokemon-card:nth-child(11) { animation-delay: 0.40s; }
+.pokemon-card:nth-child(12) { animation-delay: 0.44s; }
+
+/* =====================================================
+   7. MENSAJE DE "CARGANDO..." Y ERRORES
+   El JS agrega un <p> directo dentro del body.
+   Cuando queda vacío (todo salió bien) se oculta solo.
+   ===================================================== */
+body > p {
+    position: relative;
+    width: fit-content;
+    max-width: calc(100% - 32px);
+    margin: 0 auto 32px auto;
+    padding: 10px 22px 10px 40px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--amarillo);
+    background: rgba(255, 210, 63, 0.08);
+    border: 1px solid rgba(255, 210, 63, 0.3);
+    border-radius: 99px;
+}
+
+body > p:empty {
+    display: none;
+}
+
+/* LED parpadeante, como una luz de estado */
+body > p::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 10px currentColor;
+    animation: led 1s ease-in-out infinite;
+}
+
+@keyframes led {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+}
+
+/* =====================================================
+   8. TABLETS Y CELULARES
+   ===================================================== */
+@media (max-width: 760px) {
+    /* Los LEDs se quitan para que el título respire */
+    h1::after {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    h1 {
+        margin-bottom: 20px;
+        padding: 16px;
+        gap: 14px;
+        border-bottom-width: 6px;
+    }
+
+    /* Con tantos controles, fijo taparía media pantalla: acá fluye normal */
+    #controles {
+        position: static;
+        margin-bottom: 24px;
+        padding: 14px;
+        gap: 10px;
+    }
+
+    /* El buscador y el botón ocupan todo el ancho; los selects, de a dos */
+    input,
+    button {
+        flex: 1 1 100%;
+    }
+
+    select {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    #pokemon-container {
+        grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+        gap: 12px;
+        padding-bottom: 40px;
+    }
+
+    .pokemon-card {
+        padding: 26px 10px 14px 10px;
+        border-radius: 18px;
+    }
+
+    .pokemon-card img {
+        width: 104px;
+        height: 104px;
+    }
+
+    .pokemon-card h2 {
+        font-size: 1.15rem;
+    }
+
+    .pokemon-card p {
+        font-size: 0.82rem;
+    }
+
+    .pokemon-card p:nth-of-type(2) {
+        padding: 4px 10px;
+    }
+}
+
+/* =====================================================
+   9. ACCESIBILIDAD: si el usuario pidió menos movimiento,
+   se desactivan animaciones y transiciones
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
