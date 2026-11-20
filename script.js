@@ -1,4 +1,4 @@
-const LIMITE = 151;
+const LIMITE = 35;
 
 const API_URL = `https://pokeapi.co/api/v2/pokemon?limit=${LIMITE}`;
 
