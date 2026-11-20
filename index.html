@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./Icono/Pokeball.png">
     <link rel="stylesheet" href="./style.css">
     <title>Pokedex</title>
 </head>
 <body>
 
     <h1>PokeDex</h1>
-
-    <!-- Panel de controles: filtros y ordenamiento.
-        Los id tienen que ser EXACTAMENTE estos porque el JS los busca por nombre.
-        Los value de cada option también, porque el JS los compara. -->
     <div id="controles">
 
-        <!-- Filtro 1: nombre -->
         <input type="text" id="filtroNombre" placeholder="Buscar por nombre">
 
-        <!-- Filtro 2: tipo (el JS agrega el resto de las opciones) -->
         <select id="filtroTipo">
             <option value="todos">Todos los tipos</option>
         </select>
 
-        <!-- Filtro 3: altura -->
         <select id="filtroAltura">
             <option value="todas">Cualquier altura</option>
             <option value="baja">Baja (menos de 1 m)</option>
@@ -31,7 +25,6 @@
             <option value="alta">Alta (2 m o más)</option>
         </select>
 
-        <!-- Filtro 4: peso -->
         <select id="filtroPeso">
             <option value="todos">Cualquier peso</option>
             <option value="liviano">Liviano (menos de 10 kg)</option>
@@ -39,7 +32,6 @@
             <option value="pesado">Pesado (50 kg o más)</option>
         </select>
 
-        <!-- Ordenamiento: por qué campo -->
         <select id="ordenCriterio">
             <option value="id">Ordenar por número</option>
             <option value="name">Ordenar por nombre</option>
@@ -47,7 +39,6 @@
             <option value="weight">Ordenar por peso</option>
         </select>
 
-        <!-- Ordenamiento: ascendente o descendente -->
         <select id="ordenDireccion">
             <option value="asc">Ascendente</option>
             <option value="desc">Descendente</option>
@@ -56,11 +47,9 @@
         <button id="btnLimpiar">Limpiar filtros</button>
     </div>
 
-    <!-- Acá el JS dibuja las cards de los Pokémon -->
+    <!-- JS dibuja las cards de los Pokémon -->
     <div id="pokemon-container"></div>
 
-    <!-- El script va al final del body para que los elementos de arriba
-        ya existan cuando el JS los busque -->
     <script src="./script.js"></script>
 </body>
 </html>
